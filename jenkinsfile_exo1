@@ -1,9 +1,9 @@
 pipeline {
     agent any
     parameters {
-        string(name: 'NAME', description: 'Please tell me your name')
-        choice(name: 'BRANCH', choices: ['Master', 'Dev', 'Feature'], description: 'Choose the branch to build')
-        booleanParam(name: 'SKIP_TEST', defaultValue: false, description: 'Do you want to skip tests?')
+        string(name: 'NAME', description: 'Please tell me your name ?')
+        choice(name: 'BRANCH', choices: ['Master', 'Dev', 'Feature'], description: 'Choose the branch')
+        booleanParam(name: 'SKIP_TEST', defaultValue: false, description: 'Want to skip running Test cases?')
     }
     stages {
         stage('Greeting') {
