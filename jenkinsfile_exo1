@@ -1,46 +1,41 @@
 pipeline {
     agent any
     parameters {
-        string(name: 'NAME', description: 'Please tell me your name ?')
+        string(name: 'NAME', defaultValue: 'Default Name', description: 'Please tell me your name ?')
+        text(name: 'DESC', defaultValue: 'This is the default job description', description: 'Describe about the job details')
+        booleanParam(name: 'SKIP_TEST', defaultValue: false, description: 'Want to skip running test cases?')
         choice(name: 'BRANCH', choices: ['Master', 'Dev', 'Feature'], description: 'Choose the branch')
-        booleanParam(name: 'SKIP_TEST', defaultValue: false, description: 'Want to skip running Test cases?')
+        password(name: 'SONAR_SERVER_PWD', defaultValue: 'password', description: 'Enter SONAR password')
     }
     stages {
-        stage('Greeting') {
+        stage('Print Parameters') {
             steps {
-                script {
-                    def name = "${params.NAME}"
-                    echo "Hello, $name!"
-                }
+                echo "Name: ${params.NAME}"
+                echo "Description: ${params.DESC}"
+                echo "Skip Test: ${params.SKIP_TEST}"
+                echo "Branch: ${params.BRANCH}"
+                echo "SONAR Password: (Hidden for security reasons)"
             }
         }
-        stage('Branch Selection') {
-            steps {
-                echo "Selected branch for build: ${params.BRANCH}"
-            }
-        }
-        stage('Build') {
-            steps {
-                echo 'Starting development...'
-            }
-        }
-        stage('Test') {
+        stage('Conditional Execution') {
             when {
                 expression { return !params.SKIP_TEST }
             }
             steps {
-                echo 'Running tests...'
+                echo 'Running tests since SKIP_TEST is false.'
+                // Add test steps here
             }
         }
-        stage('Deploy') {
+        stage('Build') {
             steps {
-                echo 'Deploying to production...'
+                echo "Building branch: ${params.BRANCH}"
+                // Add build steps here
             }
         }
     }
     post {
         always {
-            echo 'Pipeline completed!'
+            echo 'Pipeline execution completed.'
         }
     }
 }
